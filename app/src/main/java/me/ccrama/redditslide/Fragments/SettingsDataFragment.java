@@ -35,39 +35,19 @@ public class SettingsDataFragment {
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case R.id.never:
-                        SettingValues.lowResMobile = false;
-                        SettingValues.lowResAlways = false;
-                        SettingValues.prefs.edit()
-                                .putBoolean(SettingValues.PREF_LOW_RES_MOBILE, false)
-                                .apply();
-                        SettingValues.prefs.edit()
-                                .putBoolean(SettingValues.PREF_LOW_RES_ALWAYS, false)
-                                .apply();
+                        setImageQualitySettings(false, false);
                         break;
                     case R.id.mobile:
-                        SettingValues.lowResMobile = true;
-                        SettingValues.lowResAlways = false;
-                        SettingValues.prefs.edit()
-                                .putBoolean(SettingValues.PREF_LOW_RES_MOBILE, true)
-                                .apply();
-                        SettingValues.prefs.edit()
-                                .putBoolean(SettingValues.PREF_LOW_RES_ALWAYS, false)
-                                .apply();
+                        setImageQualitySettings(true, false);
                         break;
                     case R.id.always:
-                        SettingValues.lowResMobile = true;
-                        SettingValues.lowResAlways = true;
-                        SettingValues.prefs.edit()
-                                .putBoolean(SettingValues.PREF_LOW_RES_MOBILE, true)
-                                .apply();
-                        SettingValues.prefs.edit()
-                                .putBoolean(SettingValues.PREF_LOW_RES_ALWAYS, true)
-                                .apply();
+                        setImageQualitySettings(true, true);
                         break;
                 }
                 datasavingLowQualityView.setText(
                         SettingValues.lowResMobile ? SettingValues.lowResAlways ? context.getString(R.string.datasave_always)
-                                : context.getString(R.string.datasave_mobile) : context.getString(R.string.never));
+                                : context.getString(R.string.datasave_mobile)
+                                : context.getString(R.string.never));
                 if (datasavingLowQualityView.getText().equals(context.getString(R.string.never))) {
                     datasavingDataSaveQualityLayout.setAlpha(0.25f);
                     datasavingCurrentModeView.setText("Enable datasaving mode");
@@ -104,80 +84,16 @@ public class SettingsDataFragment {
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.never:
-                            SettingValues.noImages = true;
-                            SettingValues.loadImageLq = true;
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_NO_IMAGES, true)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_IMAGE_LQ, true)
-                                    .apply();
+                            setImageQualityMode(true, true, false, false, false);
                             break;
                         case R.id.low:
-                            SettingValues.noImages = false;
-                            SettingValues.loadImageLq = true;
-                            SettingValues.lqLow = true;
-                            SettingValues.lqMid = false;
-                            SettingValues.lqHigh = false;
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_NO_IMAGES, false)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_IMAGE_LQ, true)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_LOW, true)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_MID, false)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_HIGH, false)
-                                    .apply();
+                            setImageQualityMode(false, true, true, false, false);
                             break;
                         case R.id.medium:
-                            SettingValues.noImages = false;
-                            SettingValues.loadImageLq = true;
-                            SettingValues.lqLow = false;
-                            SettingValues.lqMid = true;
-                            SettingValues.lqHigh = false;
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_NO_IMAGES, false)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_IMAGE_LQ, true)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_LOW, false)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_MID, true)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_HIGH, false)
-                                    .apply();
+                            setImageQualityMode(false, true, false, true, false);
                             break;
                         case R.id.high:
-                            SettingValues.noImages = false;
-                            SettingValues.loadImageLq = true;
-                            SettingValues.lqLow = false;
-                            SettingValues.lqMid = false;
-                            SettingValues.lqHigh = true;
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_NO_IMAGES, false)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_IMAGE_LQ, true)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_LOW, false)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_MID, false)
-                                    .apply();
-                            SettingValues.prefs.edit()
-                                    .putBoolean(SettingValues.PREF_LQ_HIGH, true)
-                                    .apply();
+                            setImageQualityMode(false, true, false, false, true);
                             break;
                     }
                     datasavingCurrentModeView.setText(
@@ -201,7 +117,31 @@ public class SettingsDataFragment {
         datasavingVideoQualitySwitch.setEnabled(SettingValues.lowResMobile || SettingValues.lowResAlways);
         datasavingVideoQualitySwitch.setOnCheckedChangeListener((v, checked) -> {
             SettingValues.lqVideos = checked;
-            SettingValues.prefs.edit().putBoolean(SettingValues.PREF_LQ_VIDEOS, checked).apply();
+            editSharedPreference(SettingValues.PREF_LQ_VIDEOS, checked);
         });
+    }
+
+    private void setImageQualitySettings(boolean mobile, boolean always) {
+        SettingValues.lowResMobile = mobile;
+        SettingValues.lowResAlways = always;
+        editSharedPreference(SettingValues.PREF_LOW_RES_MOBILE, mobile);
+        editSharedPreference(SettingValues.PREF_LOW_RES_ALWAYS, always);
+    }
+
+    private void setImageQualityMode(boolean noImages, boolean loadImageLq, boolean lqLow, boolean lqMid, boolean lqHigh) {
+        SettingValues.noImages = noImages;
+        SettingValues.loadImageLq = loadImageLq;
+        SettingValues.lqLow = lqLow;
+        SettingValues.lqMid = lqMid;
+        SettingValues.lqHigh = lqHigh;
+        editSharedPreference(SettingValues.PREF_NO_IMAGES, noImages);
+        editSharedPreference(SettingValues.PREF_IMAGE_LQ, loadImageLq);
+        editSharedPreference(SettingValues.PREF_LQ_LOW, lqLow);
+        editSharedPreference(SettingValues.PREF_LQ_MID, lqMid);
+        editSharedPreference(SettingValues.PREF_LQ_HIGH, lqHigh);
+    }
+
+    private void editSharedPreference(final String settingValueString, boolean b) {
+        SettingValues.prefs.edit().putBoolean(settingValueString, b).apply();
     }
 }
