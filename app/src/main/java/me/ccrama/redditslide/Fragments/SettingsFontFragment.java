@@ -1,6 +1,7 @@
 package me.ccrama.redditslide.Fragments;
 
 import android.app.Activity;
+import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -68,44 +69,46 @@ public class SettingsFontFragment {
         final RobotoRadioButton fontPostStyleCondensedBoldButton = context.findViewById(R.id.settings_font_scondb);
         final RobotoRadioButton fontPostStyleSystemButton = context.findViewById(R.id.settings_font_snone);
 
+        final FontPreferences newFontPrefs = new FontPreferences(context);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //* Links */
         fontEnlargeLinksSwitch.setChecked(SettingValues.largeLinks);
         fontEnlargeLinksSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SettingValues.largeLinks = isChecked;
-            SettingValues.prefs.edit().putBoolean(SettingValues.PREF_LARGE_LINKS, isChecked).apply();
+            editSharedPreference(SettingValues.PREF_LARGE_LINKS, isChecked);
         });
 
         fontLinkTypeSwitch.setChecked(SettingValues.typeInText);
         fontLinkTypeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SettingValues.typeInText = isChecked;
-            SettingValues.prefs.edit().putBoolean(SettingValues.PREF_TYPE_IN_TEXT, isChecked).apply();
+            editSharedPreference(SettingValues.PREF_TYPE_IN_TEXT, isChecked);
         });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //* Font styles */
         fontCommentFontSizeLayout.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(context, v);
-            popup.getMenu().add(0, R.string.font_size_huge, 0, R.string.font_size_huge);
-            popup.getMenu().add(0, R.string.font_size_larger, 0, R.string.font_size_larger);
-            popup.getMenu().add(0, R.string.font_size_large, 0, R.string.font_size_large);
-            popup.getMenu().add(0, R.string.font_size_medium, 0, R.string.font_size_medium);
-            popup.getMenu().add(0, R.string.font_size_small, 0, R.string.font_size_small);
-            popup.getMenu().add(0, R.string.font_size_smaller, 0, R.string.font_size_smaller);
+            Menu getPopupMenu = popup.getMenu();
+            getPopupMenu.add(0, R.string.font_size_huge, 0, R.string.font_size_huge);
+            getPopupMenu.add(0, R.string.font_size_larger, 0, R.string.font_size_larger);
+            getPopupMenu.add(0, R.string.font_size_large, 0, R.string.font_size_large);
+            getPopupMenu.add(0, R.string.font_size_medium, 0, R.string.font_size_medium);
+            getPopupMenu.add(0, R.string.font_size_small, 0, R.string.font_size_small);
+            getPopupMenu.add(0, R.string.font_size_smaller, 0, R.string.font_size_smaller);
 
             //registering popup with OnMenuItemClickListener
             popup.setOnMenuItemClickListener(item -> {
-                new FontPreferences(context).setCommentFontStyle(
+                newFontPrefs.setCommentFontStyle(
                         FontPreferences.FontStyleComment.valueOf(getFontName(item.getItemId())));
-                fontCommentFontText.setText(new FontPreferences(context).getCommentFontStyle().getTitle());
+                fontCommentFontText.setText(newFontPrefs.getCommentFontStyle().getTitle());
                 SettingsThemeFragment.changed = true;
                 return true;
             });
             popup.show();
         });
-        fontCommentFontText.setText(new FontPreferences(context).getCommentFontStyle().getTitle());
+        fontCommentFontText.setText(newFontPrefs.getCommentFontStyle().getTitle());
 
-        switch (new FontPreferences(context).getFontTypeComment()) {
+        switch (newFontPrefs.getFontTypeComment()) {
             case Regular:
                 fontCommentStyleRegularButton.setChecked(true);
                 break;
@@ -125,58 +128,59 @@ public class SettingsFontFragment {
         fontCommentStyleRegularButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setCommentFont(FontPreferences.FontTypeComment.Regular);
+                newFontPrefs.setCommentFont(FontPreferences.FontTypeComment.Regular);
             }
         });
         fontCommentStyleSlabButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setCommentFont(FontPreferences.FontTypeComment.Slab);
+                newFontPrefs.setCommentFont(FontPreferences.FontTypeComment.Slab);
             }
         });
         fontCommentStyleCondensedButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setCommentFont(FontPreferences.FontTypeComment.Condensed);
+                newFontPrefs.setCommentFont(FontPreferences.FontTypeComment.Condensed);
             }
         });
         fontCommentStyleLightButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setCommentFont(FontPreferences.FontTypeComment.Light);
+                newFontPrefs.setCommentFont(FontPreferences.FontTypeComment.Light);
             }
         });
         fontCommentStyleSystemButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setCommentFont(FontPreferences.FontTypeComment.System);
+                newFontPrefs.setCommentFont(FontPreferences.FontTypeComment.System);
             }
         });
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         fontPostFontSizeLayout.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(context, v);
-            popup.getMenu().add(0, R.string.font_size_huge, 0, R.string.font_size_huge);
-            popup.getMenu().add(0, R.string.font_size_larger, 0, R.string.font_size_larger);
-            popup.getMenu().add(0, R.string.font_size_large, 0, R.string.font_size_large);
-            popup.getMenu().add(0, R.string.font_size_medium, 0, R.string.font_size_medium);
-            popup.getMenu().add(0, R.string.font_size_small, 0, R.string.font_size_small);
-            popup.getMenu().add(0, R.string.font_size_smaller, 0, R.string.font_size_smaller);
-            popup.getMenu().add(0, R.string.font_size_tiny, 0, R.string.font_size_tiny);
+            Menu getPopupMenu = popup.getMenu();
+            getPopupMenu.add(0, R.string.font_size_huge, 0, R.string.font_size_huge);
+            getPopupMenu.add(0, R.string.font_size_larger, 0, R.string.font_size_larger);
+            getPopupMenu.add(0, R.string.font_size_large, 0, R.string.font_size_large);
+            getPopupMenu.add(0, R.string.font_size_medium, 0, R.string.font_size_medium);
+            getPopupMenu.add(0, R.string.font_size_small, 0, R.string.font_size_small);
+            getPopupMenu.add(0, R.string.font_size_smaller, 0, R.string.font_size_smaller);
+            getPopupMenu.add(0, R.string.font_size_tiny, 0, R.string.font_size_tiny);
 
             //registering popup with OnMenuItemClickListener
             popup.setOnMenuItemClickListener(item -> {
-                new FontPreferences(context).setPostFontStyle(
+                newFontPrefs.setPostFontStyle(
                         FontPreferences.FontStyle.valueOf(getFontName(item.getItemId())));
-                fontPostFontText.setText(new FontPreferences(context).getPostFontStyle().getTitle());
+                fontPostFontText.setText(newFontPrefs.getPostFontStyle().getTitle());
                 SettingsThemeFragment.changed = true;
                 return true;
             });
             popup.show();
         });
-        fontPostFontText.setText(new FontPreferences(context).getPostFontStyle().getTitle());
+        fontPostFontText.setText(newFontPrefs.getPostFontStyle().getTitle());
 
-        switch (new FontPreferences(context).getFontTypeTitle()) {
+        switch (newFontPrefs.getFontTypeTitle()) {
             case Regular:
                 fontPostStyleRegularButton.setChecked(true);
                 break;
@@ -211,62 +215,66 @@ public class SettingsFontFragment {
         fontPostStyleRegularButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.Regular);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.Regular);
             }
         });
         fontPostStyleBoldButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.Bold);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.Bold);
             }
         });
         fontPostStyleMediumButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.Medium);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.Medium);
             }
         });
         fontPostStyleLightButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.Light);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.Light);
             }
         });
         fontPostStyleSlabButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.SlabRegular);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.SlabRegular);
             }
         });
         fontPostStyleSlabLightButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.SlabLight);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.SlabLight);
             }
         });
         fontPostStyleCondensedButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.CondensedRegular);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.CondensedRegular);
             }
         });
         fontPostStyleCondensedLightButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.CondensedLight);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.CondensedLight);
             }
         });
         fontPostStyleCondensedBoldButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.CondensedBold);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.CondensedBold);
             }
         });
         fontPostStyleSystemButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 SettingsThemeFragment.changed = true;
-                new FontPreferences(context).setTitleFont(FontPreferences.FontTypeTitle.System);
+                newFontPrefs.setTitleFont(FontPreferences.FontTypeTitle.System);
             }
         });
+    }
+
+    private void editSharedPreference(final String settingValueString, final boolean isChecked) {
+        SettingValues.prefs.edit().putBoolean(settingValueString, isChecked).apply();
     }
 }
